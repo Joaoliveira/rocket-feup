@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CarJump : MonoBehaviour {
+public class CarJump : MonoBehaviour
+{
 
     public float jumpForce;
     public Rigidbody2D frontWheel, rearWheel;
@@ -12,7 +13,8 @@ public class CarJump : MonoBehaviour {
     private int jumpState;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         rigidBody = GetComponent<Rigidbody2D>();
         layerMask = LayerMask.GetMask(new string[] { "Default" });
         jumpState = 0;
@@ -20,30 +22,32 @@ public class CarJump : MonoBehaviour {
 
     bool wheelsGrounded()
     {
-        RaycastHit2D rayHitsFront = Physics2D.Raycast(frontWheel.position, -Vector2.up, 1.0f, layerMask);
-        RaycastHit2D rayHitsRear = Physics2D.Raycast(rearWheel.position, -Vector2.up, 1.0f, layerMask);
+        RaycastHit2D rayHitsFront = Physics2D.Raycast(frontWheel.position, -Vector2.up, 1.1f, layerMask);
+        RaycastHit2D rayHitsRear = Physics2D.Raycast(rearWheel.position, -Vector2.up, 1.1f, layerMask);
         return rayHitsFront.collider != null && rayHitsRear.collider != null;
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
         if (wheelsGrounded()) jumpState = 0;
 
         if (jumpState < 2)
         {
-            if(Input.GetKeyUp("s"))
+            if (Input.GetKeyDown("f"))
             {
                 jumpCenter();
-            }else if (Input.GetKeyUp("d"))
+            }
+            else if (Input.GetKeyDown("b"))
             {
                 jumpFront();
             }
-            else if (Input.GetKeyUp("a"))
+            else if (Input.GetKeyDown("c"))
             {
                 jumpBack();
             }
         }
-	}
+    }
 
     private void jumpCenter()
     {
