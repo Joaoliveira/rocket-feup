@@ -38,11 +38,22 @@ public class FourWD : MonoBehaviour
 	// Use this for initialization 
 	void Start()
 	{
-		//set the center of mass of the car
-		GetComponent<Rigidbody2D>().centerOfMass = centerOfMass.transform.localPosition;
+        //set the center of mass of the car
+        GetComponent<Rigidbody2D>().centerOfMass = centerOfMass.transform.localPosition;
+        print("car center of mass (before): " + GetComponent<Rigidbody2D>().centerOfMass);
+        GetComponent<Rigidbody2D>().centerOfMass += new Vector2(3.0f, -1); // move it down
 
-		//get the wheeljoint components
-		wheelJoints = gameObject.GetComponents<WheelJoint2D>();
+        print("car center of mass (after): " + GetComponent<Rigidbody2D>().centerOfMass);
+
+        // print("car x: " + GetComponent<Rigidbody2D>().centerOfMass.x);
+        // print("car y: " + GetComponent<Rigidbody2D>().centerOfMass.y);
+        // print("car width: " + GetComponent<Rigidbody2D>().centerOfMass
+
+
+
+
+        //get the wheeljoint components
+        wheelJoints = gameObject.GetComponents<WheelJoint2D>();
 		
 		print("testing\n");
 
@@ -67,7 +78,8 @@ public class FourWD : MonoBehaviour
 		torqueDir = Input.GetAxis("Horizontal");
 		if (torqueDir != 0)
 		{
-			GetComponent<Rigidbody2D>().AddTorque(3 * Mathf.PI * torqueDir, ForceMode2D.Force);
+			// GetComponent<Rigidbody2D>().AddTorque(100 * Mathf.PI * torqueDir, ForceMode2D.Force);
+			GetComponent<Rigidbody2D>().AddTorque(300 * Mathf.PI * (-1 * torqueDir), ForceMode2D.Force);
 		}
 		else {
 			GetComponent<Rigidbody2D>().AddTorque(0);
@@ -82,7 +94,7 @@ public class FourWD : MonoBehaviour
 			slope = slope - 360;
 		//horizontal movement input. same as torqueDir. Could have avoided it, but decided to 
 		//use it since some of you might want to use the Vertical axis for the torqueDir
-		dir = Input.GetAxis("Horizontal");
+		dir = Input.GetAxis("Vertical");
 
 		//explained in the post in detail
 		//check if there is any input from the user
