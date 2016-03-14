@@ -1,10 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 
 public class FourWD : MonoBehaviour
 {
-
 	//reference to the wheel joints
 	WheelJoint2D[] wheelJoints;
 	
@@ -22,9 +21,9 @@ public class FourWD : MonoBehaviour
 	//max bwd speed
 	float maxBwdSpeed = 2000f;
 	//the rate at which the car accelerates
-	float accelerationRate = 500;
+	float accelerationRate = 1000;
 	//the rate at which car decelerates
-	float decelerationRate = -100;
+	float decelerationRate = -200;
 	//how soon the car stops on braking
 	float brakeSpeed = 2500f;
 	//acceleration due to gravity
