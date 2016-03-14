@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 
 public class FourWD : MonoBehaviour
 {
+    //score test
+    public int score = 0;
+
 	//reference to the wheel joints
 	WheelJoint2D[] wheelJoints;
 	
