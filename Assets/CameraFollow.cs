@@ -1,36 +1,51 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class CameraFollow : MonoBehaviour {
+public class CameraCenter : MonoBehaviour
+{
+    public Transform player1, player2;
+    public float minSizeY = 5f;
+    public float offset;
 
-    public float interpVelocity;
-    public float minDistance;
-    public float followDistance;
-    public GameObject target;
-    public Vector3 offset;
-    Vector3 targetPos;
-    // Use this for initialization
+    float orthographicSize;
+
+    Camera cam;
+
     void Start()
     {
-        targetPos = transform.position;
+        cam = GetComponent<Camera>();
     }
 
+    void SetCameraPos()
+    {
+        Vector3 middle = (player1.position + player2.position) * 0.5f;
 
-    // Update is called once per frame
-    void Update () {
-        if (target)
-        {
-            Vector3 posNoZ = transform.position;
-            posNoZ.z = target.transform.position.z;
+        transform.position = new Vector3(
+            middle.x,
+            0,
+            transform.position.z
+        );
+    }
 
-            Vector3 targetDirection = (target.transform.position - posNoZ);
+    void SetCameraSize()
+    {
+        //horizontal size is based on actual screen ratio
+        float minSizeX = minSizeY * Screen.width / Screen.height;
 
-            interpVelocity = targetDirection.magnitude * 5f;
+        //multiplying by 0.5, because the ortographicSize is actually half the height
+        float width = Mathf.Abs(player1.position.x - player2.position.x) * 0.5f;
+        float height = Mathf.Abs(player1.position.y - player2.position.y) * 0.5f;
 
-            targetPos = transform.position + (targetDirection.normalized * interpVelocity * Time.deltaTime);
+        //computing the size
+        float camSizeX = Mathf.Max(width, minSizeX);
+        orthographicSize = Mathf.Max(height,
+            camSizeX * Screen.height / Screen.width, minSizeY);
 
-            transform.position = Vector3.Lerp(transform.position, targetPos + offset, 0.25f);
+        cam.orthographicSize = this.orthographicSize + offset;
+    }
 
-        }
+    void Update()
+    {
+        SetCameraPos();
+        SetCameraSize();
     }
 }
