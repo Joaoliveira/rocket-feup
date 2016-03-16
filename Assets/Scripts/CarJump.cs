@@ -12,12 +12,19 @@ public class CarJump : MonoBehaviour
     private LayerMask layerMask;
     private int jumpState;
 
+    float torqueDir;
+        // same as in FourWD.cs
+        // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
+
     // Use this for initialization
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         layerMask = LayerMask.GetMask(new string[] { "Default" });
         jumpState = 0;
+
+        //torqueDir to detect whether torque is being applied
+        torqueDir = Input.GetAxis("Horizontal");
     }
 
     bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
@@ -36,15 +43,20 @@ public class CarJump : MonoBehaviour
         {
             if (Input.GetKeyDown("f"))
             {
-                jumpCenter();
+                if (torqueDir > 0) jumpFront();
+                else
+                if (torqueDir < 0) jumpBack();
+                else
+                    jumpCenter();
             }
             else if (Input.GetKeyDown("b"))
             {
-                jumpFront();
+                // UnityEditor.PrefabUtility.GetPrefabParent(frontWheel).transform.localScale += new Vector3(1, 0, 0);
+                // player = GameObject.Find("Nomad").transform.localScale += new Vector3(1, 0, 0);
             }
             else if (Input.GetKeyDown("c"))
             {
-                jumpBack();
+                // GetComponent<Rigidbody2D>().transform.localScale += new Vector3(-1, 0, 0);
             }
         }
     }
