@@ -56,8 +56,6 @@ public class FourWD : MonoBehaviour
         //get the wheeljoint components
         wheelJoints = gameObject.GetComponents<WheelJoint2D>();
 		
-		print("testing\n");
-
 		//get the reference to the motor of front wheels joint
 		motorBack = wheelJoints[1].motor;
 		motorFront = wheelJoints[0].motor; // qual é a frente?
@@ -67,9 +65,6 @@ public class FourWD : MonoBehaviour
 
 		// wheelJoints = gameObject.GetComponents<WheelJoint2D>();
 		//hingeJoints = rearWheel.GetComponents<HingeJoint2D>();
-
-		print("motorback: ");
-		print(motorBack.motorSpeed);
 	}
 
 	//all physics based assignment done here
