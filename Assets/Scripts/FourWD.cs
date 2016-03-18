@@ -15,7 +15,7 @@ public class FourWD : MonoBehaviour
 	//horizontal movement keyboard input
 	float dir = 0f;
 	//input for rotation of the car
-	float torqueDir = 0f;
+	public float torqueDir = 0f;
 	//max fwd speed which the car can move at
 	float maxFwdSpeed = -5000;
 	//max bwd speed
@@ -49,7 +49,8 @@ public class FourWD : MonoBehaviour
         // print("car y: " + GetComponent<Rigidbody2D>().centerOfMass.y);
         // print("car width: " + GetComponent<Rigidbody2D>().centerOfMass
 
-
+        //add ability to rotate the car around its axis
+        torqueDir = Input.GetAxis("Horizontal");
 
 
         //get the wheeljoint components
