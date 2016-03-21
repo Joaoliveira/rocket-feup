@@ -6,17 +6,15 @@ public class CarJump : MonoBehaviour
 
     public float jumpForce;
     public Rigidbody2D frontWheel, rearWheel;
-	GameObject nomad_object;
 
-
-	private Rigidbody2D rigidBody;
+    private Rigidbody2D rigidBody;
     private float distToGround;
     private LayerMask layerMask;
     private int jumpState;
 
     float torqueDir;
-        // same as in FourWD.cs
-        // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
+    // same as in FourWD.cs
+    // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
 
     // Use this for initialization
     void Start()
@@ -27,10 +25,7 @@ public class CarJump : MonoBehaviour
 
         //torqueDir to detect whether torque is being applied
         torqueDir = Input.GetAxis("Horizontal");
-
-		nomad_object = rigidBody.transform.parent.gameObject;
-
-	}
+    }
 
     bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
     {
@@ -61,14 +56,8 @@ public class CarJump : MonoBehaviour
             }
             else if (Input.GetKeyDown("c"))
             {
-				// GetComponent<Rigidbody2D>().transform.parent.gameObject.transform.localScale += new Vector3(-1, 0, 0);
-				// GetComponent<Rigidbody2D>().transform.parent.gameObject.transform.localScale += new Vector3(-1, 0, 0);
-				// rigidBody.transform.parent.gameObject.transform.localScale += new Vector3(-1, 0, 0);
-				print("TESTE: " + nomad_object.ToString());
-				nomad_object.transform.localScale += new Vector3(-1.0f, 0, 0);
-				System.Threading.Thread.Sleep(3000);
-				nomad_object.transform.localScale += new Vector3(-1.0f, 0, 0);
-			}
+                // GetComponent<Rigidbody2D>().transform.localScale += new Vector3(-1, 0, 0);
+            }
         }
     }
 
