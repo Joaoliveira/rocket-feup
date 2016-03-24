@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class CarJump : MonoBehaviour
 {
@@ -12,9 +13,11 @@ public class CarJump : MonoBehaviour
     private LayerMask layerMask;
     private int jumpState;
 
+    public bool facingRight = true;			// For determining which way the car is currently facing.
+
     float torqueDir;
-        // same as in FourWD.cs
-        // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
+    // same as in FourWD.cs
+    // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
 
     // Use this for initialization
     void Start()
@@ -22,9 +25,6 @@ public class CarJump : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         layerMask = LayerMask.GetMask(new string[] { "Default" });
         jumpState = 0;
-
-        //torqueDir to detect whether torque is being applied
-        torqueDir = Input.GetAxis("Horizontal");
     }
 
     bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
@@ -35,8 +35,11 @@ public class CarJump : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        //torqueDir to detect whether torque is being applied
+        torqueDir = Input.GetAxis("Horizontal");
+
         if (wheelsGrounded()) jumpState = 0;
 
         if (jumpState < 2)
@@ -51,14 +54,24 @@ public class CarJump : MonoBehaviour
             }
             else if (Input.GetKeyDown("b"))
             {
-                // UnityEditor.PrefabUtility.GetPrefabParent(frontWheel).transform.localScale += new Vector3(1, 0, 0);
-                // player = GameObject.Find("Nomad").transform.localScale += new Vector3(1, 0, 0);
+                if (!facingRight) Flip();
             }
             else if (Input.GetKeyDown("c"))
             {
-                // GetComponent<Rigidbody2D>().transform.localScale += new Vector3(-1, 0, 0);
+                if (facingRight) Flip();
             }
         }
+    }
+
+    private void Flip()
+    {
+        // Switch the way the car is labelled as facing.
+        facingRight = !facingRight;
+
+        // Multiply the player's x local scale by -1.
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 
     private void jumpCenter()

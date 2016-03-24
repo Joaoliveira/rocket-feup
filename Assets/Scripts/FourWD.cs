@@ -35,8 +35,12 @@ public class FourWD : MonoBehaviour
 	public Transform rearWheel;
 	public Transform frontWheel;
 
-	// Use this for initialization 
-	void Start()
+    GameObject car;
+    CarJump carJump;
+    bool facingRight;
+
+    // Use this for initialization 
+    void Start()
 	{
         //set the center of mass of the car
         GetComponent<Rigidbody2D>().centerOfMass = centerOfMass.transform.localPosition;
@@ -49,34 +53,24 @@ public class FourWD : MonoBehaviour
         // print("car y: " + GetComponent<Rigidbody2D>().centerOfMass.y);
         // print("car width: " + GetComponent<Rigidbody2D>().centerOfMass
 
-        //add ability to rotate the car around its axis
-        torqueDir = Input.GetAxis("Horizontal");
-
-
         //get the wheeljoint components
         wheelJoints = gameObject.GetComponents<WheelJoint2D>();
 		
-		print("testing\n");
-
 		//get the reference to the motor of front wheels joint
 		motorBack = wheelJoints[1].motor;
 		motorFront = wheelJoints[0].motor; // qual é a frente?
 
-		//motorBack = rearWheel.GetComponent<WheelJoint2D>();
-		// motorFront = frontWheel.GetComponent<WheelJoint2D>().motor;
-
-		// wheelJoints = gameObject.GetComponents<WheelJoint2D>();
-		//hingeJoints = rearWheel.GetComponents<HingeJoint2D>();
-
-		print("motorback: ");
-		print(motorBack.motorSpeed);
-	}
+        // car = this.GetComponentInParent<GameObject>(); // devia ser nomadChassis, dá erro
+        car = GameObject.Find("Nomad"); // Nomad completo para flipar também as rodas
+        print(car.ToString());
+        carJump = car.GetComponent<CarJump>(); // to access the facingRight boolean var in CarJump.cs
+    }
 
 	//all physics based assignment done here
 	void FixedUpdate()
 	{
 		//add ability to rotate the car around its axis
-		torqueDir = Input.GetAxis("Horizontal");
+        torqueDir = Input.GetAxis("Horizontal");
 		if (torqueDir != 0)
 		{
 			// GetComponent<Rigidbody2D>().AddTorque(100 * Mathf.PI * torqueDir, ForceMode2D.Force);
@@ -97,7 +91,9 @@ public class FourWD : MonoBehaviour
 		//use it since some of you might want to use the Vertical axis for the torqueDir
 		dir = Input.GetAxis("Vertical");
 
-		//explained in the post in detail
+        facingRight = carJump.facingRight; // update facingRight
+        if (!facingRight) dir *= -1;
+
 		//check if there is any input from the user
 		if (dir != 0)
 		{
@@ -119,7 +115,6 @@ public class FourWD : MonoBehaviour
 			motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (-decelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, 0, maxBwdSpeed);
 			motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (-decelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, 0, maxBwdSpeed);
 		}
-
 
 
 		//apply brakes to the car
