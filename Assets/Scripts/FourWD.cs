@@ -37,7 +37,6 @@ public class FourWD : MonoBehaviour
 
     GameObject car;
     CarJump carJump;
-    bool facingRight;
 
     // Use this for initialization 
     void Start()
@@ -61,7 +60,7 @@ public class FourWD : MonoBehaviour
 		motorFront = wheelJoints[0].motor; // qual é a frente?
 
         // car = this.GetComponentInParent<GameObject>(); // devia ser nomadChassis, dá erro
-        car = GameObject.Find("Nomad"); // Nomad completo para flipar também as rodas
+        car = GameObject.Find("NomadChassis"); // Nomad completo para flipar também as rodas
         print(car.ToString());
         carJump = car.GetComponent<CarJump>(); // to access the facingRight boolean var in CarJump.cs
     }
@@ -91,14 +90,24 @@ public class FourWD : MonoBehaviour
 		//use it since some of you might want to use the Vertical axis for the torqueDir
 		dir = Input.GetAxis("Vertical");
 
-        facingRight = carJump.facingRight; // update facingRight
-        if (!facingRight) dir *= -1;
+        if (!carJump.facingRight) dir *= -1.0f;
 
-		//check if there is any input from the user
-		if (dir != 0)
+        /*
+        if (!facingRight.Equals(carJump.facingRight)) // if the direction has changed in CarJump.cs, change it here
+        {
+            facingRight = carJump.facingRight; // update facingRight
+            if (!facingRight) dir *= -1;
+        }
+        */
+
+        //check if there is any input from the user
+        if (dir != 0)
 		{
-			//add speed accordingly
-			motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+            if (carJump.facingRight) print("accellerating while car is facingRight");
+            if (!carJump.facingRight) print("accellerating while car is facingLeft");
+
+            //add speed accordingly
+            motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
 			motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
 		}
 		//if no input and car is moving forward or no input and car is stagnant and is on an inclined plane with negative slope

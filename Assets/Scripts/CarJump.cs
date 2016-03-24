@@ -52,15 +52,19 @@ public class CarJump : MonoBehaviour
                 else
                     jumpCenter();
             }
-            else if (Input.GetKeyDown("b"))
-            {
-                if (!facingRight) Flip();
-            }
-            else if (Input.GetKeyDown("c"))
-            {
-                if (facingRight) Flip();
-            }
         }
+
+        if (Input.GetKeyDown("b"))
+        {
+            print("pressed b and car is "); if (facingRight) print("facing right"); else print("facing left");
+            if (!facingRight) Flip();
+        }
+        else if (Input.GetKeyDown("c"))
+        {
+            print("pressed c and car is "); if (facingRight) print("facing right"); else print("facing left");
+            if (facingRight) Flip();
+        }
+
     }
 
     private void Flip()
@@ -68,8 +72,16 @@ public class CarJump : MonoBehaviour
         // Switch the way the car is labelled as facing.
         facingRight = !facingRight;
 
+        if (facingRight) print("Car is now facing right");
+        if (!facingRight) print("Car is now facing left");
+
         // Multiply the player's x local scale by -1.
+        /*
         Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
+        */
+        Vector3 theScale = GameObject.Find("NomadChassis").transform.localScale; // mudar para carro completo (incl. rodas)
         theScale.x *= -1;
         transform.localScale = theScale;
     }
