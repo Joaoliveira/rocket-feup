@@ -7,6 +7,7 @@ public class CarJump : MonoBehaviour
 
     public float jumpForce;
     public Rigidbody2D frontWheel, rearWheel;
+    public string jumpButton, flipButton, horizontalAxis;
 
     private Rigidbody2D rigidBody;
     private float distToGround;
@@ -25,6 +26,8 @@ public class CarJump : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         layerMask = LayerMask.GetMask(new string[] { "Default" });
         jumpState = 0;
+
+        //torqueDir to detect whether torque is being applied
     }
 
     bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
@@ -37,14 +40,13 @@ public class CarJump : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //torqueDir to detect whether torque is being applied
-        torqueDir = Input.GetAxis("Horizontal");
 
         if (wheelsGrounded()) jumpState = 0;
-
+        torqueDir = Input.GetAxis(horizontalAxis);
+        if (!facingRight) torqueDir *= -1;
         if (jumpState < 2)
         {
-            if (Input.GetKeyDown("f"))
+            if (Input.GetKeyDown(jumpButton))
             {
                 if (torqueDir > 0) jumpFront();
                 else
@@ -54,17 +56,9 @@ public class CarJump : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown("b"))
-        {
-            print("pressed b and car is "); if (facingRight) print("facing right"); else print("facing left");
-            if (!facingRight) Flip();
-        }
-        else if (Input.GetKeyDown("c"))
-        {
-            print("pressed c and car is "); if (facingRight) print("facing right"); else print("facing left");
-            if (facingRight) Flip();
-        }
-
+        if (Input.GetKeyDown(flipButton))
+            Flip();
+       
     }
 
     private void Flip()
@@ -81,9 +75,10 @@ public class CarJump : MonoBehaviour
         theScale.x *= -1;
         transform.localScale = theScale;
         */
-        Vector3 theScale = GameObject.Find("NomadChassis").transform.localScale; // mudar para carro completo (incl. rodas)
-        theScale.x *= -1;
+        Vector3 theScale = transform.localScale; // mudar para carro completo (incl. rodas)
+        theScale.x *= -1.0f;
         transform.localScale = theScale;
+        print(theScale);
     }
 
     private void jumpCenter()

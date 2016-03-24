@@ -34,6 +34,7 @@ public class FourWD : MonoBehaviour
 
 	public Transform rearWheel;
 	public Transform frontWheel;
+    public string accelerationAxis, horizontalAxis;
 
     GameObject car;
     CarJump carJump;
@@ -60,17 +61,19 @@ public class FourWD : MonoBehaviour
 		motorFront = wheelJoints[0].motor; // qual é a frente?
 
         // car = this.GetComponentInParent<GameObject>(); // devia ser nomadChassis, dá erro
-        car = GameObject.Find("NomadChassis"); // Nomad completo para flipar também as rodas
+        car = transform.parent.gameObject; // Nomad completo para flipar também as rodas
         print(car.ToString());
-        carJump = car.GetComponent<CarJump>(); // to access the facingRight boolean var in CarJump.cs
+        carJump = this.GetComponent<CarJump>(); // to access the facingRight boolean var in CarJump.cs
     }
 
 	//all physics based assignment done here
 	void FixedUpdate()
 	{
 		//add ability to rotate the car around its axis
-        torqueDir = Input.GetAxis("Horizontal");
-		if (torqueDir != 0)
+        torqueDir = Input.GetAxis(horizontalAxis);
+        //if (!carJump.facingRight) torqueDir *= -1.0f;
+
+        if (torqueDir != 0)
 		{
 			// GetComponent<Rigidbody2D>().AddTorque(100 * Mathf.PI * torqueDir, ForceMode2D.Force);
 			GetComponent<Rigidbody2D>().AddTorque(300 * Mathf.PI * (-1 * torqueDir), ForceMode2D.Force);
@@ -88,10 +91,9 @@ public class FourWD : MonoBehaviour
 			slope = slope - 360;
 		//horizontal movement input. same as torqueDir. Could have avoided it, but decided to 
 		//use it since some of you might want to use the Vertical axis for the torqueDir
-		dir = Input.GetAxis("Vertical");
-
+		dir = Input.GetAxis(accelerationAxis);
+        
         if (!carJump.facingRight) dir *= -1.0f;
-
         /*
         if (!facingRight.Equals(carJump.facingRight)) // if the direction has changed in CarJump.cs, change it here
         {
@@ -103,8 +105,8 @@ public class FourWD : MonoBehaviour
         //check if there is any input from the user
         if (dir != 0)
 		{
-            if (carJump.facingRight) print("accellerating while car is facingRight");
-            if (!carJump.facingRight) print("accellerating while car is facingLeft");
+            /*if (carJump.facingRight) print("accellerating while car is facingRight");
+            if (!carJump.facingRight) print("accellerating while car is facingLeft");*/
 
             //add speed accordingly
             motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
