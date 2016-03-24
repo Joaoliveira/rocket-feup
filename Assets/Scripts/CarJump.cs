@@ -1,21 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class CarJump : MonoBehaviour
 {
 
     public float jumpForce;
     public Rigidbody2D frontWheel, rearWheel;
-    public string jumpButton, horizontalAxis;
+    public string jumpButton, flipButton, horizontalAxis;
 
     private Rigidbody2D rigidBody;
     private float distToGround;
     private LayerMask layerMask;
     private int jumpState;
 
+    public bool facingRight = true;			// For determining which way the car is currently facing.
+
     float torqueDir;
-        // same as in FourWD.cs
-        // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
+    // same as in FourWD.cs
+    // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
 
     // Use this for initialization
     void Start()
@@ -35,11 +38,12 @@ public class CarJump : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+
         if (wheelsGrounded()) jumpState = 0;
         torqueDir = Input.GetAxis(horizontalAxis);
-
+        if (!facingRight) torqueDir *= -1;
         if (jumpState < 2)
         {
             if (Input.GetKeyDown(jumpButton))
@@ -51,6 +55,30 @@ public class CarJump : MonoBehaviour
                     jumpCenter();
             }
         }
+
+        if (Input.GetKeyDown(flipButton))
+            Flip();
+       
+    }
+
+    private void Flip()
+    {
+        // Switch the way the car is labelled as facing.
+        facingRight = !facingRight;
+
+        if (facingRight) print("Car is now facing right");
+        if (!facingRight) print("Car is now facing left");
+
+        // Multiply the player's x local scale by -1.
+        /*
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
+        */
+        Vector3 theScale = transform.localScale; // mudar para carro completo (incl. rodas)
+        theScale.x *= -1.0f;
+        transform.localScale = theScale;
+        print(theScale);
     }
 
     private void jumpCenter()
