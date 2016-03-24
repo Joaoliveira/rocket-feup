@@ -50,7 +50,7 @@ public class FourWD : MonoBehaviour
         // print("car width: " + GetComponent<Rigidbody2D>().centerOfMass
 
         //add ability to rotate the car around its axis
-        torqueDir = Input.GetAxis("Horizontal");
+        // torqueDir = Input.GetAxis("Horizontal"); // não é aqui
 
 
         //get the wheeljoint components
@@ -71,7 +71,7 @@ public class FourWD : MonoBehaviour
 	void FixedUpdate()
 	{
 		//add ability to rotate the car around its axis
-		torqueDir = Input.GetAxis("Horizontal");
+        torqueDir = Input.GetAxis("Horizontal");
 		if (torqueDir != 0)
 		{
 			// GetComponent<Rigidbody2D>().AddTorque(100 * Mathf.PI * torqueDir, ForceMode2D.Force);

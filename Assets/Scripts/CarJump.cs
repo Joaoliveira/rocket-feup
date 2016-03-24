@@ -22,9 +22,6 @@ public class CarJump : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         layerMask = LayerMask.GetMask(new string[] { "Default" });
         jumpState = 0;
-
-        //torqueDir to detect whether torque is being applied
-        torqueDir = Input.GetAxis("Horizontal");
     }
 
     bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
@@ -35,8 +32,11 @@ public class CarJump : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        //torqueDir to detect whether torque is being applied
+        torqueDir = Input.GetAxis("Horizontal");
+
         if (wheelsGrounded()) jumpState = 0;
 
         if (jumpState < 2)
