@@ -34,6 +34,7 @@ public class FourWD : MonoBehaviour
 
 	public Transform rearWheel;
 	public Transform frontWheel;
+    public string accelerationAxis, horizontalAxis;
 
 	// Use this for initialization 
 	void Start()
@@ -50,7 +51,7 @@ public class FourWD : MonoBehaviour
         // print("car width: " + GetComponent<Rigidbody2D>().centerOfMass
 
         //add ability to rotate the car around its axis
-        torqueDir = Input.GetAxis("Horizontal");
+        torqueDir = Input.GetAxis(horizontalAxis);
 
 
         //get the wheeljoint components
@@ -76,7 +77,7 @@ public class FourWD : MonoBehaviour
 	void FixedUpdate()
 	{
 		//add ability to rotate the car around its axis
-		torqueDir = Input.GetAxis("Horizontal");
+		torqueDir = Input.GetAxis(horizontalAxis);
 		if (torqueDir != 0)
 		{
 			// GetComponent<Rigidbody2D>().AddTorque(100 * Mathf.PI * torqueDir, ForceMode2D.Force);
@@ -93,13 +94,13 @@ public class FourWD : MonoBehaviour
 		//based on the slope angle
 		if (slope >= 180)
 			slope = slope - 360;
-		//horizontal movement input. same as torqueDir. Could have avoided it, but decided to 
-		//use it since some of you might want to use the Vertical axis for the torqueDir
-		dir = Input.GetAxis("Vertical");
+        //horizontal movement input. same as torqueDir. Could have avoided it, but decided to 
+        //use it since some of you might want to use the Vertical axis for the torqueDir
+        dir = Input.GetAxis(accelerationAxis);
 
-		//explained in the post in detail
-		//check if there is any input from the user
-		if (dir != 0)
+        //explained in the post in detail
+        //check if there is any input from the user
+        if (dir != 0)
 		{
 			//add speed accordingly
 			motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);

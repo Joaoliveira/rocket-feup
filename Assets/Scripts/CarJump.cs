@@ -6,6 +6,7 @@ public class CarJump : MonoBehaviour
 
     public float jumpForce;
     public Rigidbody2D frontWheel, rearWheel;
+    public string jumpButton, horizontalAxis;
 
     private Rigidbody2D rigidBody;
     private float distToGround;
@@ -24,7 +25,6 @@ public class CarJump : MonoBehaviour
         jumpState = 0;
 
         //torqueDir to detect whether torque is being applied
-        torqueDir = Input.GetAxis("Horizontal");
     }
 
     bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
@@ -38,25 +38,17 @@ public class CarJump : MonoBehaviour
     void Update()
     {
         if (wheelsGrounded()) jumpState = 0;
+        torqueDir = Input.GetAxis(horizontalAxis);
 
         if (jumpState < 2)
         {
-            if (Input.GetKeyDown("f"))
+            if (Input.GetKeyDown(jumpButton))
             {
                 if (torqueDir > 0) jumpFront();
                 else
                 if (torqueDir < 0) jumpBack();
                 else
                     jumpCenter();
-            }
-            else if (Input.GetKeyDown("b"))
-            {
-                // UnityEditor.PrefabUtility.GetPrefabParent(frontWheel).transform.localScale += new Vector3(1, 0, 0);
-                // player = GameObject.Find("Nomad").transform.localScale += new Vector3(1, 0, 0);
-            }
-            else if (Input.GetKeyDown("c"))
-            {
-                // GetComponent<Rigidbody2D>().transform.localScale += new Vector3(-1, 0, 0);
             }
         }
     }
