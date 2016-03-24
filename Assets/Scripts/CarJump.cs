@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class CarJump : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class CarJump : MonoBehaviour
     private float distToGround;
     private LayerMask layerMask;
     private int jumpState;
+
+    public bool facingRight = true;			// For determining which way the car is currently facing.
 
     float torqueDir;
     // same as in FourWD.cs
@@ -51,14 +54,24 @@ public class CarJump : MonoBehaviour
             }
             else if (Input.GetKeyDown("b"))
             {
-                // UnityEditor.PrefabUtility.GetPrefabParent(frontWheel).transform.localScale += new Vector3(1, 0, 0);
-                // player = GameObject.Find("Nomad").transform.localScale += new Vector3(1, 0, 0);
+                if (!facingRight) Flip();
             }
             else if (Input.GetKeyDown("c"))
             {
-                // GetComponent<Rigidbody2D>().transform.localScale += new Vector3(-1, 0, 0);
+                if (facingRight) Flip();
             }
         }
+    }
+
+    private void Flip()
+    {
+        // Switch the way the car is labelled as facing.
+        facingRight = !facingRight;
+
+        // Multiply the player's x local scale by -1.
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 
     private void jumpCenter()
