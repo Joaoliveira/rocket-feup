@@ -36,6 +36,7 @@ public class FourWD : MonoBehaviour
 	public Transform frontWheel;
     public string accelerationAxis, horizontalAxis;
 
+    private Vector3 startPosition;
     GameObject car;
     CarJump carJump;
 
@@ -66,9 +67,18 @@ public class FourWD : MonoBehaviour
         carJump = this.GetComponent<CarJump>(); // to access the facingRight boolean var in CarJump.cs
     }
 
+    public void Reset()
+    {
+        motorBack.motorSpeed = 0.0f;
+        motorFront.motorSpeed = 0.0f;
+        wheelJoints[1].motor = motorBack; // para quê isto???
+        wheelJoints[0].motor = motorFront; // com isto, a roda da frente não se mexe sem aplicar velocidade no código
+    }
+
 	//all physics based assignment done here
 	void FixedUpdate()
 	{
+        
 		//add ability to rotate the car around its axis
         torqueDir = Input.GetAxis(horizontalAxis);
         //if (!carJump.facingRight) torqueDir *= -1.0f;
