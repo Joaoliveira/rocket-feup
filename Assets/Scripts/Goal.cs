@@ -25,7 +25,7 @@ public class Goal : MonoBehaviour {
         if (other.name != "Ball") return;
         //make changes to opponent here
         //opponent = GameObject.FindGameObjectWithTag("Player");
-        opponent.GetComponent<Score>().score++;
+        opponent.GetComponent<Score>().incrementScore();
 
         opponentChassis.GetComponent<FourWD>().Reset();
         friendlyChassis.GetComponent<FourWD>().Reset();
