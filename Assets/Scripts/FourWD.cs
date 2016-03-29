@@ -94,7 +94,7 @@ public class FourWD : MonoBehaviour
 		dir = Input.GetAxis(accelerationAxis);
         
         if (!carJump.facingRight) dir *= -1.0f;
-        /*
+		/*
         if (!facingRight.Equals(carJump.facingRight)) // if the direction has changed in CarJump.cs, change it here
         {
             facingRight = carJump.facingRight; // update facingRight
@@ -102,16 +102,37 @@ public class FourWD : MonoBehaviour
         }
         */
 
-        //check if there is any input from the user
-        if (dir != 0)
+		//check if there is any input from the user
+		if (dir > 0) // if input is positive
 		{
-            /*if (carJump.facingRight) print("accellerating while car is facingRight");
-            if (!carJump.facingRight) print("accellerating while car is facingLeft");*/
+			if (motorBack.motorSpeed > 0) // car is going backward
+			{ // apply brakes
+				motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
+				motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
+			}
+			else // car is stationary or going forward
+			{ // accelerate
+				motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+				motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+			}
 
-            //add speed accordingly
-            motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
-			motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
 		}
+
+		if (dir < 0) // if input is negative
+		{
+			if (motorBack.motorSpeed < 0) // car is going forward
+			{ // apply brakes
+				motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - brakeSpeed * Time.deltaTime, 0, maxBwdSpeed);
+				motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - brakeSpeed * Time.deltaTime, 0, maxBwdSpeed);
+			}
+			else // car is stationary or going backward
+			{ // accelerate
+				motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+				motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+			}
+
+		}
+		
 		//if no input and car is moving forward or no input and car is stagnant and is on an inclined plane with negative slope
 		if ((dir == 0 && motorBack.motorSpeed < 0) || (dir == 0 && motorBack.motorSpeed == 0 && slope < 0))
 		{
@@ -128,17 +149,19 @@ public class FourWD : MonoBehaviour
 		}
 
 
+		/*
 		//apply brakes to the car
-		if (Input.GetKey(KeyCode.Space) && motorBack.motorSpeed > 0)
+		if (Input.GetKey(brakeButton) && motorBack.motorSpeed > 0)
 		{
 			motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - brakeSpeed * Time.deltaTime, 0, maxBwdSpeed);
 			motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - brakeSpeed * Time.deltaTime, 0, maxBwdSpeed);
 		}
-		else if (Input.GetKey(KeyCode.Space) && motorBack.motorSpeed < 0)
+		else if (Input.GetKey(brakeButton) && motorBack.motorSpeed < 0)
 		{
 			motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
 			motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
 		}
+		*/
 		
 		//connect the motor to the joint
 		
