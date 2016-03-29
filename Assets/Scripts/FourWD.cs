@@ -44,10 +44,7 @@ public class FourWD : MonoBehaviour
 	{
         //set the center of mass of the car
         GetComponent<Rigidbody2D>().centerOfMass = centerOfMass.transform.localPosition;
-        print("car center of mass (before): " + GetComponent<Rigidbody2D>().centerOfMass);
         GetComponent<Rigidbody2D>().centerOfMass += new Vector2(3.0f, -1); // move it down
-
-        print("car center of mass (after): " + GetComponent<Rigidbody2D>().centerOfMass);
 
         // print("car x: " + GetComponent<Rigidbody2D>().centerOfMass.x);
         // print("car y: " + GetComponent<Rigidbody2D>().centerOfMass.y);
@@ -60,7 +57,6 @@ public class FourWD : MonoBehaviour
 		motorBack = wheelJoints[1].motor;
 		motorFront = wheelJoints[0].motor; // qual é a frente?
 
-        // car = this.GetComponentInParent<GameObject>(); // devia ser nomadChassis, dá erro
         car = transform.parent.gameObject; // Nomad completo para flipar também as rodas
         print(car.ToString());
         carJump = this.GetComponent<CarJump>(); // to access the facingRight boolean var in CarJump.cs
@@ -164,9 +160,8 @@ public class FourWD : MonoBehaviour
 		*/
 		
 		//connect the motor to the joint
-		
-		wheelJoints[1].motor = motorBack; // para quê isto???
-		wheelJoints[0].motor = motorFront; // com isto, a roda da frente não se mexe sem aplicar velocidade no código
+		wheelJoints[1].motor = motorBack;
+		wheelJoints[0].motor = motorFront;
 
 	}
 

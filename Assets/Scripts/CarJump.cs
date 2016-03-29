@@ -17,11 +17,14 @@ public class CarJump : MonoBehaviour
     public bool facingRight = true;			// For determining which way the car is currently facing.
 
     float torqueDir;
-    // same as in FourWD.cs
-    // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
+	int groundLayer = 19; // Debug.Log(LayerMask.NameToLayer("Ground"));
 
-    // Use this for initialization
-    void Start()
+
+	// same as in FourWD.cs
+	// alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
+
+	// Use this for initialization
+	void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         layerMask = LayerMask.GetMask(new string[] { "Default" });
@@ -32,10 +35,20 @@ public class CarJump : MonoBehaviour
 
     bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
     {
-        RaycastHit2D rayHitsFront = Physics2D.Raycast(frontWheel.position, -Vector2.up, 1.1f, layerMask);
-        RaycastHit2D rayHitsRear = Physics2D.Raycast(rearWheel.position, -Vector2.up, 1.1f, layerMask);
-        return rayHitsFront.collider != null && rayHitsRear.collider != null;
-    }
+		CircleCollider2D rearWheelCollider = rearWheel.GetComponentInChildren<CircleCollider2D>();
+		CircleCollider2D frontWheelCollider = frontWheel.GetComponentInChildren<CircleCollider2D>();
+
+		if (rearWheelCollider.IsTouchingLayers(groundLayer) && rearWheelCollider.IsTouchingLayers(groundLayer))
+			print("rear wheel touching Ground layer");
+		if (frontWheelCollider.IsTouchingLayers(groundLayer) && rearWheelCollider.IsTouchingLayers(groundLayer))
+			print("front wheel touching Ground layer");
+
+		return rearWheelCollider.IsTouchingLayers(groundLayer) && rearWheelCollider.IsTouchingLayers(groundLayer);
+
+		//RaycastHit2D rayHitsFront = Physics2D.Raycast(frontWheel.position, -Vector2.up, 1.1f, layerMask);
+		//RaycastHit2D rayHitsRear = Physics2D.Raycast(rearWheel.position, -Vector2.up, 1.1f, layerMask);
+		//return rayHitsFront.collider != null && rayHitsRear.collider != null;
+	}
 
     // Update is called once per frame
     void FixedUpdate()
