@@ -8,34 +8,47 @@ public class CarJump : MonoBehaviour
     public float jumpForce;
     public Rigidbody2D frontWheel, rearWheel;
     public string jumpButton, flipButton, horizontalAxis;
-
-    private Rigidbody2D rigidBody;
-    private float distToGround;
-    private LayerMask layerMask;
-    private int jumpState;
-
     public bool facingRight = true;			// For determining which way the car is currently facing.
 
-    float torqueDir;
-    // same as in FourWD.cs
-    // alternativa a isto? Variável partilhada por carro? (atenção para múltiplos carros)
+    private Rigidbody2D rigidBody;
+    private LayerMask layerMask;
+    private int jumpState;
+    private float torqueDir; // to detect whether torque is being applied
+    private float distanceToGround;
+	// int groundLayer = 18; // Debug.Log(LayerMask.NameToLayer("Ground"));
 
-    // Use this for initialization
-    void Start()
+	// Use this for initialization
+	void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
-        layerMask = LayerMask.GetMask(new string[] { "Default" });
+        layerMask = LayerMask.GetMask(new string[] { "Ground" });
         jumpState = 0;
 
-        //torqueDir to detect whether torque is being applied
+        distanceToGround = 1.0f; // idealmente iríamos buscar isto tipo collider.bounds.extents.y; mas parece que não há para 2d
     }
-
-    bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
+    
+    public bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
     {
-        RaycastHit2D rayHitsFront = Physics2D.Raycast(frontWheel.position, -Vector2.up, 1.1f, layerMask);
-        RaycastHit2D rayHitsRear = Physics2D.Raycast(rearWheel.position, -Vector2.up, 1.1f, layerMask);
-        return rayHitsFront.collider != null && rayHitsRear.collider != null;
-    }
+        /*
+		CircleCollider2D rearWheelCollider = rearWheel.GetComponentInChildren<CircleCollider2D>();
+		CircleCollider2D frontWheelCollider = frontWheel.GetComponentInChildren<CircleCollider2D>();
+
+		if (rearWheelCollider.IsTouchingLayers(groundLayer))
+			print("rear wheel touching Ground layer");
+		if (frontWheelCollider.IsTouchingLayers(groundLayer))
+			print("front wheel touching Ground layer");
+
+        print("rear wheel collider: " + rearWheelCollider.ToString());
+        print("front wheel collider: " + frontWheelCollider.ToString());
+
+        return rearWheelCollider.IsTouchingLayers(groundLayer) && rearWheelCollider.IsTouchingLayers(groundLayer);
+        */
+
+        RaycastHit2D rayHitsFront = Physics2D.Raycast(frontWheel.position, -Vector2.up, distanceToGround + 0.1f, layerMask);
+        RaycastHit2D rayHitsRear = Physics2D.Raycast(rearWheel.position, -Vector2.up, distanceToGround + 0.1f, layerMask);
+
+        return (rayHitsFront.collider != null) && (rayHitsRear.collider != null);
+	}
 
     // Update is called once per frame
     void FixedUpdate()
