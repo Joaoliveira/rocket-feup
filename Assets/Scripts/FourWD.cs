@@ -17,19 +17,19 @@ public class FourWD : MonoBehaviour
 	//input for rotation of the car
 	public float torqueDir = 0f;
 	//max fwd speed which the car can move at
-	float maxFwdSpeed = -5000;
+	float maxFwdSpeed = -5000f;
 	//max bwd speed
 	float maxBwdSpeed = 2000f;
 	//the rate at which the car accelerates
-	float accelerationRate = 1000;
+	float accelerationRate = 1000f;
 	//the rate at which car decelerates
-	float decelerationRate = -200;
+	float decelerationRate = -200f;
 	//how soon the car stops on braking
-	float brakeSpeed = 2500f;
+	float brakeSpeed = 2500f; // original 2500f
 	//acceleration due to gravity
 	float gravity = 9.81f;
 	//angle in which the car is at wrt the ground
-	float slope = 0;
+	float slope = 0f;
 	//reference to the wheels
 
 	public Transform rearWheel;
@@ -100,43 +100,48 @@ public class FourWD : MonoBehaviour
 		dir = Input.GetAxis(accelerationAxis);
         
         if (!carJump.facingRight) dir *= -1.0f;
-        /*
-        if (!facingRight.Equals(carJump.facingRight)) // if the direction has changed in CarJump.cs, change it here
-        {
-            facingRight = carJump.facingRight; // update facingRight
-            if (!facingRight) dir *= -1;
-        }
-        */
 
         //check if there is any input from the user
         if (carJump.wheelsGrounded()) // only accelerate or brake if wheels are grounded
         {
-            print("wheels are grounded");
+            // print("wheels are grounded");
             if (dir > 0) // if input is positive
             {
                 if (motorBack.motorSpeed > 0) // car is going backward
-                { // apply brakes
-                    motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
-                    motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
+                { // apply brakes on both wheels
+                    motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - brakeSpeed * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+                    // if (motorFront.motorSpeed > 0)
+                        motorFront.motorSpeed = Mathf.Clamp(motorFront.motorSpeed - brakeSpeed * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
                 }
-                else // car is stationary or going forward
+                else // back wheel is stationary or going forward // motorBack.motorSpeed <= 0
                 { // accelerate
                     motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
-                    motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+                    // if (motorFront.motorSpeed < 0)
+                        motorFront.motorSpeed = Mathf.Clamp(motorFront.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
                 }
             }
 
             if (dir < 0) // if input is negative
             {
-                if (motorBack.motorSpeed < 0) // car is going forward
-                { // apply brakes
-                    motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - brakeSpeed * Time.deltaTime, 0, maxBwdSpeed);
-                    motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - brakeSpeed * Time.deltaTime, 0, maxBwdSpeed);
+                /*
+                // simply braking
+                if (motorBack.motorSpeed < 0) {
+                    motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
+                    motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, 0);
                 }
-                else // car is stationary or going backward
+                */
+               
+                if (motorBack.motorSpeed < 0) // back wheel is going forward
+                { // apply brakes on both wheels
+                    motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, maxBwdSpeed); // sinal ok
+                    // if (motorFront.motorSpeed < 0) // front wheel is going forward
+                        motorFront.motorSpeed = Mathf.Clamp(motorFront.motorSpeed + brakeSpeed * Time.deltaTime, maxFwdSpeed, maxBwdSpeed); // sinal ok
+                }
+                else // back wheel is stationary or going backward  // motorBack.motorSpeed >= 0
                 { // accelerate
                     motorBack.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
-                    motorFront.motorSpeed = Mathf.Clamp(motorBack.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
+                    // if (motorFront.motorSpeed > 0)
+                        motorFront.motorSpeed = Mathf.Clamp(motorFront.motorSpeed - (dir * accelerationRate - gravity * Mathf.Sin((slope * Mathf.PI) / 180) * 80) * Time.deltaTime, maxFwdSpeed, maxBwdSpeed);
                 }
 
             }

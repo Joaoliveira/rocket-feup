@@ -25,6 +25,7 @@ public class CarJump : MonoBehaviour
         jumpState = 0;
 
         distanceToGround = 1.0f; // idealmente iríamos buscar isto tipo collider.bounds.extents.y; mas parece que não há para 2d
+        // Flip();
     }
     
     public bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
