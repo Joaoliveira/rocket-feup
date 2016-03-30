@@ -16,6 +16,7 @@ public class CarJump : MonoBehaviour
     private float torqueDir; // to detect whether torque is being applied
     private float distanceToGround;
 	// int groundLayer = 18; // Debug.Log(LayerMask.NameToLayer("Ground"));
+	private float timeUpsideDown = 0f;
 
 	// Use this for initialization
 	void Start()
@@ -51,11 +52,21 @@ public class CarJump : MonoBehaviour
         return (rayHitsFront.collider != null) && (rayHitsRear.collider != null);
     }
 
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        print(col.gameObject.name);
-        print(col.gameObject.tag);
-    }
+	void OnCollisionStay2D(Collision2D col)
+	{
+		print(col.gameObject.name);
+		print(col.gameObject.tag);
+
+		if (col.gameObject.tag == "Ground") {
+			timeUpsideDown += Time.deltaTime;
+			print("timeUpsideDown: " + timeUpsideDown);
+			if (timeUpsideDown > 2)
+			{
+				jumpFlip();
+				timeUpsideDown = 0f;
+			}
+		}
+	}
 
     public bool carUpsideDownGrounded() // mudar para wheels -> istouching ou parecido
     {
@@ -119,21 +130,19 @@ public class CarJump : MonoBehaviour
     private void jumpBack()
     {
         frontWheel.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
-        rigidBody.AddForce(-transform.right * jumpForce, ForceMode2D.Impulse);
+        rigidBody.AddForce(-transform.right * jumpForce * 0.2f, ForceMode2D.Impulse);
         jumpState++;
     }
 
     private void jumpFront()
     {
         rearWheel.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
-        rigidBody.AddForce(transform.right * jumpForce, ForceMode2D.Impulse);
+        rigidBody.AddForce(transform.right * jumpForce * 0.2f, ForceMode2D.Impulse);
         jumpState++;
     }
 
     private void jumpFlip()
     {
-        print("JUMPLIP");
-        rigidBody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
-        jumpState++;
+        rigidBody.AddForce(-1.0f * transform.up * jumpForce, ForceMode2D.Impulse);
     }
 }
