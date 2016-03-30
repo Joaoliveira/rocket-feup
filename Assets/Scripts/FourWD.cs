@@ -59,7 +59,7 @@ public class FourWD : MonoBehaviour
 		motorFront = wheelJoints[0].motor; // qual é a frente?
 
         car = transform.parent.gameObject; // Nomad completo para flipar também as rodas
-        print(car.ToString());
+        // print(car.ToString());
         carJump = this.GetComponent<CarJump>(); // to access the facingRight boolean var in CarJump.cs
     }
 
