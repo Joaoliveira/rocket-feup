@@ -27,7 +27,7 @@ public class CarJump : MonoBehaviour
         distanceToGround = 1.0f; // idealmente iríamos buscar isto tipo collider.bounds.extents.y; mas parece que não há para 2d
         // Flip();
     }
-    
+
     public bool wheelsGrounded() // mudar para wheels -> istouching ou parecido
     {
         /*
@@ -49,7 +49,19 @@ public class CarJump : MonoBehaviour
         RaycastHit2D rayHitsRear = Physics2D.Raycast(rearWheel.position, -Vector2.up, distanceToGround + 0.1f, layerMask);
 
         return (rayHitsFront.collider != null) && (rayHitsRear.collider != null);
-	}
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        print(col.gameObject.name);
+        print(col.gameObject.tag);
+    }
+
+    public bool carUpsideDownGrounded() // mudar para wheels -> istouching ou parecido
+    {
+        RaycastHit2D rayHitsTop = Physics2D.Raycast(rigidBody.position, -Vector2.up, distanceToGround + 0.5f, layerMask);
+        return rayHitsTop.collider != null;
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -62,6 +74,9 @@ public class CarJump : MonoBehaviour
         {
             if (Input.GetKeyDown(jumpButton))
             {
+                if (carUpsideDownGrounded())
+                    jumpFlip();
+
                 if (torqueDir > 0) jumpFront();
                 else
                 if (torqueDir < 0) jumpBack();
@@ -112,6 +127,13 @@ public class CarJump : MonoBehaviour
     {
         rearWheel.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         rigidBody.AddForce(transform.right * jumpForce, ForceMode2D.Impulse);
+        jumpState++;
+    }
+
+    private void jumpFlip()
+    {
+        print("JUMPLIP");
+        rigidBody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         jumpState++;
     }
 }
